@@ -1,0 +1,160 @@
+const wrapper = document.querySelector(".wrapper");
+const musicImg = wrapper.querySelector(".img-area img");
+const musicName = wrapper.querySelector(".song-details .name");
+const musicArtist = wrapper.querySelector(".song-details .artist");
+const playPauseBtn = wrapper.querySelector(".play-pause");
+const prevBtn = wrapper.querySelector("#prev");
+const nextBtn = wrapper.querySelector("#next");
+const audio = wrapper.querySelector("audio");
+const progressArea = wrapper.querySelector(".progress-area");
+const progressBar = wrapper.querySelector(".progress-bar");
+const progressCircle = progressBar.querySelector("span");
+const timer = wrapper.querySelector(".timer");
+const musicList = wrapper.querySelector(".music-list");
+const moreMusicBtn = wrapper.querySelector("#more-music");
+const closeMusicBtn = wrapper.querySelector("#close");
+const playlist = wrapper.querySelector("#playlist");
+
+let musicIndex = 1;
+
+window.addEventListener("load", () => {
+    loadMusic(musicIndex);
+});
+
+function loadMusic(index) {
+    musicName.innerText = allMusic[index - 1].name;
+    musicArtist.innerText = allMusic[index - 1].artist;
+    musicImg.src = `image/${allMusic[index - 1].img}.jpg`;
+    audio.src = `music/${allMusic[index - 1].src}.mp3`;
+}
+
+function playMusic() {
+    wrapper.classList.add("paused");
+    playPauseBtn.querySelector("i").innerText = "pause";
+    audio.play();
+}
+
+function pauseMusic() {
+    wrapper.classList.remove("paused");
+    playPauseBtn.querySelector("i").innerText = "play_arrow";
+    audio.pause();
+}
+
+playPauseBtn.addEventListener("click", () => {
+    const isMusicPaused = wrapper.classList.contains("paused");
+    isMusicPaused ? pauseMusic() : playMusic();
+});
+
+function nextMusic() {
+    musicIndex++;
+    musicIndex > allMusic.length ? musicIndex = 1 : musicIndex;
+    loadMusic(musicIndex);
+    playMusic();
+}
+
+function prevMusic() {
+    musicIndex--;
+    musicIndex < 1 ? musicIndex = allMusic.length : musicIndex;
+    loadMusic(musicIndex);
+    playMusic();
+}
+
+nextBtn.addEventListener("click", nextMusic);
+prevBtn.addEventListener("click", prevMusic);
+
+audio.addEventListener("timeupdate", (e) => {
+    const currentTime = e.target.currentTime;
+    const duration = e.target.duration;
+    let progressWidth = (currentTime / duration) * 100;
+    progressBar.style.width = progressWidth + "%";
+    progressCircle.style.left = progressWidth + "%";
+
+    let musicCurrentTime = wrapper.querySelector(".current");
+    let musicDuration = wrapper.querySelector(".duration");
+    audio.addEventListener("loadeddata", () => {
+        let audioDuration = audio.duration;
+        let totalMin = Math.floor(audioDuration / 60);
+        let totalSec = Math.floor(audioDuration % 60);
+        if (totalSec < 10) totalSec = "0" + totalSec;
+        musicDuration.innerText = totalMin + ":" + totalSec;
+    });
+    let currentMin = Math.floor(currentTime / 60);
+    let currentSec = Math.floor(currentTime % 60);
+    if (currentSec < 10) currentSec = "0" + currentSec;
+    musicCurrentTime.innerText = currentMin + ":" + currentSec;
+});
+
+progressArea.addEventListener("click", (e) => {
+    let progressWidth = progressArea.clientWidth;
+    let clickedOffsetX = e.offsetX;
+    let songDuration = audio.duration;
+    progressBar.style.width = (clickedOffsetX / progressWidth) * 100 + "%";
+    progressCircle.style.left = (clickedOffsetX / progressWidth) * 100 + "%";
+    audio.currentTime = (clickedOffsetX / progressWidth) * songDuration;
+});
+
+const repeatBtn = wrapper.querySelector("#repeat-pist");
+repeatBtn.addEventListener("click", () => {
+    let getText = repeatBtn.innerText;
+    switch (getText) {
+        case "repeat":
+            repeatBtn.innerText = "repeat_one";
+            break;
+        case "repeat_one":
+            repeatBtn.innerText = "shuffle";
+            break;
+        case "shuffle":
+            repeatBtn.innerText = "repeat";
+            break;
+    }
+});
+
+audio.addEventListener("ended", () => {
+    let getText = repeatBtn.innerText;
+    switch (getText) {
+        case "repeat":
+            nextMusic();
+            break;
+        case "repeat_one":
+            audio.currentTime = 0;
+            loadMusic(musicIndex);
+            playMusic();
+            break;
+        case "shuffle":
+            let randIndex = Math.floor(Math.random() * allMusic.length) + 1;
+            do {
+                randIndex = Math.floor(Math.random() * allMusic.length) + 1;
+            } while (musicIndex == randIndex);
+            musicIndex = randIndex;
+            loadMusic(musicIndex);
+            playMusic();
+            break;
+    }
+});
+
+moreMusicBtn.addEventListener("click", () => {
+    musicList.classList.add("show");
+});
+
+closeMusicBtn.addEventListener("click", () => {
+    musicList.classList.remove("show");
+});
+
+const allMusic = [
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (1)", src: "dems (1)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (2)", src: "dems (2)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (3)", src: "dems (3)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (4)", src: "dems (4)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (5)", src: "dems (5)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (6)", src: "dems (6)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (7)", src: "dems (7)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (8)", src: "dems (8)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (9)", src: "dems (9)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (10)", src: "dems (10)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (11)", src: "dems (11)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (12)", src: "dems (12)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (13)", src: "dems (13)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (14)", src: "dems (14)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img: "dems (15)", src: "dems (15)" },
+    { name: "Ikson Anywhere - Ikson", artist: "Audio Library", img },
+]
