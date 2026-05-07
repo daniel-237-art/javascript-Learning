@@ -40,6 +40,26 @@ body {
     user-select: none;
 }
 
+.wrapper.paused {
+    background: var(--song-gradient, linear-gradient(135deg, #141414, #434343, #eeb9cc, #9a769e));
+    background-size: 400% 400%;
+    animation: waveFlow 4s ease infinite;
+}
+
+@keyframes waveFlow {
+    0% {
+        background-position: 0% 50%;
+    }
+
+    50% {
+        background-position: 100% 50%;
+    }
+
+    100% {
+        background-position: 0% 50%;
+    }
+}
+
 .top-bar,
 .timer,
 .header,
@@ -203,9 +223,16 @@ body {
 .music-list ul li {
     cursor: pointer;
     list-style: none;
-    padding: 10px 0;
+    padding: 10px 15px;
     color: var(--lightblack);
     border-bottom: 1px solid #efefef;
+    border-radius: 8px;
+    transition: color 0.3s ease, background 0.3s ease;
+}
+
+.music-list ul li:hover {
+    color: var(--pink);
+    background: rgba(255, 116, 164, 0.1);
 }
 
 .music-list ul li:last-child {
